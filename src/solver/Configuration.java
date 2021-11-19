@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * Configuration abstraction for the solver algorithm
  *
  * @author Maija Philip
+ * @author Caitlin Patton
  */
 public interface Configuration<E> {
 

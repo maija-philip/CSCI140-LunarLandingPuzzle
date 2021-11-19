@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * Main class for the water buckets puzzle.
  *
  * @author Maija Philip
+ * @author Caitlin Patton
  */
 public class Water {
 

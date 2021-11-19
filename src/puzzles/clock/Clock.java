@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Main class for the "clock" puzzle.
  *
  * @author Maija Philip
+ * @author Caitlin Patton
  */
 public class Clock {
 

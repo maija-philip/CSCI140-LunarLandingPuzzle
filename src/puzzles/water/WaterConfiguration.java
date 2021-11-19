@@ -5,6 +5,12 @@ import solver.Configuration;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Configuration water class for the solver algorithm.
+ *
+ * @author Maija Philip
+ * @author Caitlin Patton
+ */
 public class WaterConfiguration implements Configuration<ArrayList<Integer>> {
 
     private int amount;

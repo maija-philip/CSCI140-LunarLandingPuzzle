@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * Configuration clock class for the solver algorithm
  *
  * @author Maija Philip
+ * @author Caitlin Patton
  */
 public class ClockConfiguration implements Configuration<Integer> {
 

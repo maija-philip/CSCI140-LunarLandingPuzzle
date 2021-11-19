@@ -8,6 +8,7 @@ import java.util.HashMap;
  * configuration to a solution, if one exists
  *
  * @author Maija Philip
+ * @author Caitlin Patton
  */
 public class Solver<E> {
     private int configCounter;
