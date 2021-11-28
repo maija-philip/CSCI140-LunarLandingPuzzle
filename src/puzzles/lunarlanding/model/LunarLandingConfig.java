@@ -1,24 +1,340 @@
 package puzzles.lunarlanding.model;
 
+import puzzles.lunarlanding.LunarLanding;
 import solver.Configuration;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 /**
  * DESCRIPTION
  * @author YOUR NAME HERE
  * November 2021
  */
-public class LunarLandingConfig implements Configuration {
+public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
+
+    /* board details */
+    private int width;
+    private int height;
+    private String board[][];
+
+    /* important coordinates */
+    private int goalRow;
+    private int goalCol;
+
+    private int explorerRow;
+    private int explorerCol;
+
+    /* Robots */
+    private HashMap<String, int[]> robots;
 
 
-    @Override
-    public boolean isSolution(Object o) {
-        return false;
+
+    /**
+     * Construct the initial configuration from an input file whose contents
+     * are, for example:<br>
+     * <tt><br>
+     * 3 3          # rows columns<br>
+     * 1 . #        # row 1, .=empty, 1-9=numbered island, #=island, &#64;=sea<br>
+     * &#64; . 3    # row 2<br>
+     * 1 . .        # row 3<br>
+     * </tt><br>
+     *
+     * @param filename the name of the file to read from
+     * @throws FileNotFoundException if the file is not found
+     */
+    public LunarLandingConfig(String filename) throws FileNotFoundException {
+        try (Scanner in = new Scanner(new File(filename))) {
+
+            this.width = in.nextInt();
+            this.height = in.nextInt();
+            board = new String[height][width];
+
+            // fill board with underscores
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    board[i][j] = "_";
+                }
+            }
+
+
+            // set up and place the goal
+            this.goalRow = in.nextInt();
+            this.goalCol = in.nextInt();
+            board[goalRow][goalCol] = "!";
+
+
+            // set up and place the robots
+            robots = new HashMap<>();
+
+            String s = in.next();
+            int countOf3 = 0;
+            String tempLetter = "_";
+            int tempX = 0;
+            int tempY = 0;
+
+            while (!s.equals("solvable")) {
+                // System.out.println(s);
+
+                if (countOf3 % 3 == 0) {
+                    tempLetter = s;
+                }
+                else if (countOf3 % 3 == 1) {
+                    tempX = Integer.parseInt(s);
+
+                    if (tempLetter.equals("E")){
+                        explorerCol = Integer.parseInt(s);
+                    }
+                }
+                else {
+                    tempY = Integer.parseInt(s);
+                    // System.out.println("Letter: " + tempLetter + ", Coords: " + tempX + ", " + tempY);
+
+                    if (tempLetter.equals("E")){
+                        explorerRow = Integer.parseInt(s);
+                    }
+
+                    int row = tempX;
+                    int col = tempY;
+
+                    if (board[row][col] == "!") {
+                        board[row][col] = "!" + tempLetter;
+
+                    } else {
+                        board[row][col] = tempLetter;
+
+                    }
+
+                    robots.put(tempLetter, new int[] {tempX, tempY});
+
+
+                }
+
+                s = in.next();
+                countOf3++;
+            }
+
+
+        } // try-with-resources, the file is closed automatically
+
+        //System.out.println(this);
+    }
+
+    private LunarLandingConfig(LunarLandingConfig copy) {
+
+        /* board details */
+        this.width = copy.width;
+        this.height = copy.height;
+        this.board = new String[width][height];
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                this.board[i][j] = copy.board[i][j];
+            }
+        }
+
+
+        /* important coordinates */
+        this.goalRow = copy.goalRow;
+        this.goalCol = copy.goalCol;
+
+
+        this.explorerRow = copy.explorerRow;
+        this.explorerCol = copy.explorerCol;
+
+        /* Robots */
+        this.robots = new HashMap<>();
+
+        for (Map.Entry<String, int[]> robot: copy.robots.entrySet()) {
+
+            String letter = robot.getKey();
+            int robotX = robot.getValue()[0];
+            int robotY = robot.getValue()[1];
+
+            this.robots.put(letter, new int[] {robotX, robotY});
+        }
+
     }
 
     @Override
-    public ArrayList getNeighbors(Object o) {
-        return null;
+    public boolean isSolution(LunarLandingConfig lunarLandingConfig) {
+        return lunarLandingConfig.board[goalRow][goalCol].equals("!E");
+    }
+
+    @Override
+    public ArrayList<LunarLandingConfig> getNeighbors(LunarLandingConfig lunarLandingConfig) {
+        //System.out.println("getNeighbors");
+
+        ArrayList<LunarLandingConfig> neighbors = new ArrayList<>();
+
+
+        for (Map.Entry<String, int[]> robot: lunarLandingConfig.robots.entrySet()) {
+
+            String letter = robot.getKey();
+            int robotX = robot.getValue()[0];
+            int robotY = robot.getValue()[1];
+
+            //System.out.println(robot + ", letter: " + letter + ", [ " + robotX + ", " + robotY + " ]");
+
+            String[] directions = {"UP", "DOWN", "LEFT", "RIGHT"};
+
+            for (String direction : directions) {
+
+                // check for legal moves in direction
+                int[] coordinates = lunarLandingConfig.getRobotCoordinates(robotX, robotY, direction);
+
+                // if it is legal move, adds a possible next move with the move
+                if (coordinates[0] != -1) {
+
+                    int x = coordinates[0];
+                    int y = coordinates[1];
+
+                    // creates new move
+                    LunarLandingConfig nextMove = new LunarLandingConfig(lunarLandingConfig);
+
+                    if (robotX == goalRow && robotY == goalCol) {
+                        nextMove.board[robotX][robotY] = "!";
+                    } else {
+                        nextMove.board[robotX][robotY] = "_";
+
+                    }
+
+                    if (x == goalRow && y == goalCol) {
+                        nextMove.board[x][y] = "!" + letter;
+                    } else {
+                        nextMove.board[x][y] = letter;
+                    }
+
+                    nextMove.robots.replace(letter, new int[]{x, y});
+
+                    neighbors.add(nextMove);
+                }
+            }
+
+        }
+
+        return neighbors;
+    }
+
+
+    // Find the first robot we encounter in moving in this direction if any
+    private int[] getRobotCoordinates(int x, int y, String direction) {
+        //System.out.println("getRobotCoordinates");
+        int startX = x, startY = y;
+        int lastX = x, lastY = y;
+        int[] noMove = new int[]{-1, -1};
+
+        // move one
+        switch (direction) {
+            case "UP" -> x--;
+            case "RIGHT" -> y++;
+            case "DOWN" -> x++;
+            case "LEFT" -> y--;
+        }
+
+        while (isCoordinateInGrid(x,y)) {
+
+            // We found a robot, in a normal space
+            if  (!board[x][y].equals("_") && !board[x][y].equals("!")) {
+                // If we haven't actually moved, return noMove
+                if (lastX == startX && lastY == startY) {
+                    return noMove;
+                }
+                return new int[]{lastX, lastY};
+            }
+
+            lastX = x;
+            lastY = y;
+            // No robot yet, keep going.
+            switch (direction) {
+                case "UP" -> x--;
+                case "RIGHT" -> y++;
+                case "DOWN" -> x++;
+                case "LEFT" -> y--;
+            }
+        }
+
+        // We hit the end of the grid with no robots
+        return noMove;
+    }
+
+    private boolean isCoordinateInGrid(int x, int y) {
+        return x >= 0 && x < width && y >= 0 && y < height;
+    }
+
+
+
+    /**
+     * Returns the string representation of the puzzle, e.g.: <br>
+     * <tt><br>
+     * 1 . #<br>
+     * &#64; . 3<br>
+     * 1 . .<br>
+     * </tt><br>
+     */
+    @Override
+    public String toString() {
+        String result = "      ";
+        String tempTabLine = "    ";
+
+        // write the numbers along the top and the dashed line
+        for (int w = 0; w < width; w++) {
+            result += w + "  ";
+            tempTabLine += "___";
+        }
+
+        // take the last space off and start new line
+        result = result.substring(0, result.length()-1) + "\n";
+        result += tempTabLine + "\n";
+
+
+        for (int i = 0; i < height; i++) {
+
+            result += " " + i + " |  ";
+
+            for (int j = 0; j < width; j++) {
+                String thisSpot = board[i][j];
+                if (thisSpot.charAt(0) == '!') {
+                    result = result.substring(0, result.length()-1) + board[i][j] + "  ";
+
+                } else {
+                    result += board[i][j] + "  ";
+
+                }
+
+            }
+            result = result.substring(0, result.length()-2) + "\n";
+
+        }
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if (o instanceof LunarLandingConfig other) {
+
+            result = true;
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (this.board[i][j] != other.board[i][j]) {
+                        //System.out.println(i + ", " + j);
+                        return false;
+                    }
+                }
+            }
+
+            //result =  this.board == other.board;
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(width, height, goalRow, goalCol, explorerRow, explorerCol, robots);
+        result = 31 * result + Arrays.hashCode(board);
+        return result;
     }
 }
