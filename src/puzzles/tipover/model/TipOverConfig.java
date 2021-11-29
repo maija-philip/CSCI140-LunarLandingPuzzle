@@ -2,6 +2,7 @@ package puzzles.tipover.model;
 
 import solver.Configuration;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -10,6 +11,10 @@ import java.util.ArrayList;
  * November 2021
  */
 public class TipOverConfig implements Configuration {
+
+    public TipOverConfig(String filename) throws FileNotFoundException {
+
+    }
 
     @Override
     public boolean isSolution(Object o) {
