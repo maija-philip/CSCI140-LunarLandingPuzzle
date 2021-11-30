@@ -102,6 +102,8 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
                 if(c.board[up[0]][up[1]]==0){
                     TipOverConfig hold = TippingAttempt(c,"UP");
                     if(hold!=null){
+                        hold.tipRow = up[0];
+                        hold.tipCol = up[1];
                         neighbors.add(hold);
                     }
                 } else if(c.board[up[0]][up[1]] > 0){
@@ -115,6 +117,8 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
                 if(c.board[down[0]][down[1]]==0){
                     TipOverConfig hold = TippingAttempt(c,"DOWN");
                     if(hold!=null){
+                        hold.tipRow = down[0];
+                        hold.tipCol = down[1];
                         neighbors.add(hold);
                     }
                 } else if(c.board[down[0]][down[1]] > 0){
@@ -128,6 +132,8 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
                 if(c.board[left[0]][left[1]]==0){
                     TipOverConfig hold = TippingAttempt(c,"LEFT");
                     if(hold!=null){
+                        hold.tipRow = left[0];
+                        hold.tipCol = left[1];
                         neighbors.add(hold);
                     }
                 } else if(c.board[left[0]][left[1]] > 0){
@@ -141,6 +147,8 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
                 if(c.board[right[0]][right[1]]==0){
                     TipOverConfig hold = TippingAttempt(c,"RIGHT");
                     if(hold!=null){
+                        hold.tipRow = right[0];
+                        hold.tipCol = right[1];
                         neighbors.add(hold);
                     }
                 } else if (c.board[right[0]][right[1]] > 0){
@@ -161,21 +169,30 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
         int x = c.tipRow;
         int y = c.tipCol;
 
-        boolean failCheck = true;
         TipOverConfig newTipOver = new TipOverConfig(c);
 
-        while(failCheck && isCoordinateInGrid(x,y)){
+        switch (direction) {
+            case "UP" -> x--;
+            case "RIGHT" -> y++;
+            case "DOWN" -> x++;
+            case "LEFT" -> y--;
+        }
+
+        while(isCoordinateInGrid(x,y)){
             for(int i = 0 ; i < c.board[c.tipRow][c.tipCol]; i++){
+                if(!isCoordinateInGrid(x,y)){
+                    return null;
+                }
+                if (c.board[x][y]==0){
+                    newTipOver.board[x][y] = 1;
+                } else {
+                    return null;
+                }
                 switch (direction) {
                     case "UP" -> x--;
                     case "RIGHT" -> y++;
                     case "DOWN" -> x++;
                     case "LEFT" -> y--;
-                }
-                if (c.board[x][y]==0){
-                    newTipOver.board[x][y] = 1;
-                } else {
-                    failCheck = false;
                 }
             }
             newTipOver.board[c.tipRow][c.tipCol] = 0;
