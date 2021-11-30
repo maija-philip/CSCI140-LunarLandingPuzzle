@@ -77,63 +77,81 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
 
         ArrayList<TipOverConfig> neighbors = new ArrayList<>();
 
+        ArrayList<int[]> coordinates = getDirections(c);
+        int row = c.tipRow;
+        int col = c.tipCol;
+
+        if(c.board[row][col]==1){
+            for(int[] position : coordinates){
+                if(c.board[position[0]][position[1]] > 0){
+                    TipOverConfig copy = new TipOverConfig(c);
+                    copy.tipRow = position[0];
+                    copy.tipCol = position[1];
+                    neighbors.add(copy);
+                }
+            }
+        }
+
         int[] up = getUp(c);
         int[] down = getDown(c);
         int[] left = getLeft(c);
         int[] right = getRight(c);
 
-        if(isCoordinateInGrid(up[0],up[1])){
-            if(c.board[up[0]][up[1]]==0){
-                TipOverConfig hold = TippingAttempt(c,"UP");
-                if(hold!=null){
-                    neighbors.add(hold);
+        if (c.board[c.tipRow][c.tipCol] > 1){
+            if(isCoordinateInGrid(up[0],up[1])){
+                if(c.board[up[0]][up[1]]==0){
+                    TipOverConfig hold = TippingAttempt(c,"UP");
+                    if(hold!=null){
+                        neighbors.add(hold);
+                    }
+                } else if(c.board[up[0]][up[1]] > 0){
+                    TipOverConfig copy = new TipOverConfig(c);
+                    copy.tipRow = up[0];
+                    copy.tipCol = up[1];
+                    neighbors.add(copy);
                 }
-            } else if(c.board[up[0]][up[1]] > 0){
-                TipOverConfig copy = new TipOverConfig(c);
-                copy.tipRow = up[0];
-                copy.tipCol = up[1];
-                neighbors.add(copy);
+            }
+            if(isCoordinateInGrid(down[0],down[1])){
+                if(c.board[down[0]][down[1]]==0){
+                    TipOverConfig hold = TippingAttempt(c,"DOWN");
+                    if(hold!=null){
+                        neighbors.add(hold);
+                    }
+                } else if(c.board[down[0]][down[1]] > 0){
+                    TipOverConfig copy = new TipOverConfig(c);
+                    copy.tipRow = down[0];
+                    copy.tipCol = down[1];
+                    neighbors.add(copy);
+                }
+            }
+            if(isCoordinateInGrid(left[0],left[1])){
+                if(c.board[left[0]][left[1]]==0){
+                    TipOverConfig hold = TippingAttempt(c,"LEFT");
+                    if(hold!=null){
+                        neighbors.add(hold);
+                    }
+                } else if(c.board[left[0]][left[1]] > 0){
+                    TipOverConfig copy = new TipOverConfig(c);
+                    copy.tipRow = left[0];
+                    copy.tipCol = left[1];
+                    neighbors.add(copy);
+                }
+            }
+            if(isCoordinateInGrid(right[0],right[1])){
+                if(c.board[right[0]][right[1]]==0){
+                    TipOverConfig hold = TippingAttempt(c,"RIGHT");
+                    if(hold!=null){
+                        neighbors.add(hold);
+                    }
+                } else if (c.board[right[0]][right[1]] > 0){
+                    TipOverConfig copy = new TipOverConfig(c);
+                    copy.tipRow = right[0];
+                    copy.tipCol = right[1];
+                    neighbors.add(copy);
+                }
             }
         }
-        if(isCoordinateInGrid(down[0],down[1])){
-            if(c.board[down[0]][down[1]]==0){
-                TipOverConfig hold = TippingAttempt(c,"DOWN");
-                if(hold!=null){
-                    neighbors.add(hold);
-                }
-            } else if(c.board[down[0]][down[1]] > 0){
-                TipOverConfig copy = new TipOverConfig(c);
-                copy.tipRow = down[0];
-                copy.tipCol = down[1];
-                neighbors.add(copy);
-            }
-        }
-        if(isCoordinateInGrid(left[0],left[1])){
-            if(c.board[left[0]][left[1]]==0){
-                TipOverConfig hold = TippingAttempt(c,"LEFT");
-                if(hold!=null){
-                    neighbors.add(hold);
-                }
-            } else if(c.board[left[0]][left[1]] > 0){
-                TipOverConfig copy = new TipOverConfig(c);
-                copy.tipRow = left[0];
-                copy.tipCol = left[1];
-                neighbors.add(copy);
-            }
-        }
-        if(isCoordinateInGrid(right[0],right[1])){
-            if(c.board[right[0]][right[1]]==0){
-                TipOverConfig hold = TippingAttempt(c,"RIGHT");
-                if(hold!=null){
-                    neighbors.add(hold);
-                }
-            } else if (c.board[right[0]][right[1]] > 0){
-                TipOverConfig copy = new TipOverConfig(c);
-                copy.tipRow = right[0];
-                copy.tipCol = right[1];
-                neighbors.add(copy);
-            }
-        }
+
 
         return neighbors;
     }
@@ -171,6 +189,33 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
     private boolean isCoordinateInGrid(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
+
+    private ArrayList<int[]> getDirections(TipOverConfig c){
+
+        ArrayList<int[]> cords = new ArrayList<>();
+
+        int[] up = getUp(c);
+        int[] down = getDown(c);
+        int[] left = getLeft(c);
+        int[] right = getRight(c);
+
+        if(isCoordinateInGrid(up[0],up[1])){
+            cords.add(up);
+        }
+        if(isCoordinateInGrid(down[0],down[1])){
+            cords.add(down);
+        }
+        if(isCoordinateInGrid(left[0],left[1])){
+            cords.add(left);
+        }
+        if(isCoordinateInGrid(right[0],right[1])){
+            cords.add(right);
+        }
+
+        return cords;
+
+    }
+
 
     private int[] getUp(TipOverConfig c){
         int[] hold = new int[2];
@@ -220,7 +265,35 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
         return hold;
     }
 
+    @Override
+    public String toString(){
+        String top = "    ";
+        String line = "    ";
+        String text = "";
+        for(int i = 0; i < width; i++){
+            top += "  " + i;
+            line += "___";
+        }
+        top += "\n";
+        line += "\n";
 
+        for(int i = 0; i < height; i++){
+            text += " " + i + " |";
+            for(int j = 0; j < width; j++){
+                if (board[i][j] == 0){
+                    text += "  _";
+                } else if (j==goalCol && i==goalRow){
+                    text += " !" + board[i][j];
+                } else if (j==tipCol && i==tipRow){
+                    text += " *" + board[i][j];
+                } else {
+                    text += "  " + board[i][j];
+                }
+            }
+            text += "\n";
+        }
+        return top + line + text;
+    }
 
 
 }
