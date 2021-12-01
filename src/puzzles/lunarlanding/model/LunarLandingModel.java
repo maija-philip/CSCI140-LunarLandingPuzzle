@@ -1,5 +1,7 @@
 package puzzles.lunarlanding.model;
 
+import puzzles.tipover.model.TipOverConfig;
+import solver.Solver;
 import util.Observer;
 
 import java.io.FileNotFoundException;
@@ -60,7 +62,7 @@ public class LunarLandingModel {
     }
 
     public void load(String filename) {
-        System.out.println("load");
+        // System.out.println("load");
 
         try {
             this.currentConfig = new LunarLandingConfig(filename);
@@ -74,7 +76,7 @@ public class LunarLandingModel {
     }
 
     public void reload() {
-        System.out.println("reload");
+        //System.out.println("reload");
         try {
             currentConfig = new LunarLandingConfig(currentFilename);
         } catch (FileNotFoundException e) {
@@ -84,12 +86,31 @@ public class LunarLandingModel {
         this.reset();
     }
 
-    public void move(String move) {
-        System.out.println("move: " + move);
+    public void move(String givenX, String givenY, String direction) {
+        //System.out.println("move robot at (" + givenX + ", " + givenY + ") " + direction);
+
+        int x, y;
+        try {
+            x = Integer.parseInt(givenX);
+            y = Integer.parseInt(givenY);
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage().substring(18) + " is not a coordinate, please enter a number");
+            return;
+        }
+
+        currentConfig = currentConfig.playMove(x, y, direction, currentConfig);
+
     }
 
-    public void hint() {
-        System.out.println("hint");
+    public void hint(){
+        Solver<LunarLandingConfig> TipSolver = new Solver<>(currentConfig);
+        ArrayList<LunarLandingConfig> path = TipSolver.solve(currentConfig);
+        currentConfig = path.get(1);
+
+    }
+
+    public boolean isSolution() {
+        return currentConfig.isSolution(currentConfig);
     }
 
     public LunarLandingConfig getCurrentConfig() {

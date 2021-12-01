@@ -40,15 +40,22 @@ public class LunarLandingPTUI implements Observer< LunarLandingModel, Object > {
                     movesNum = 0;
                     displayBoard(movesNum);
                 } else if (words[0].startsWith("m")){
-                    this.model.move(words[1]);
+                    this.model.move(words[1], words[2], words[3]);
                     this.movesNum+=1;
                 } else if (words[0].startsWith("hi")){
                     this.model.hint();
+                    displayBoard(movesNum);
                 } else if (words[0].startsWith("s")){
                     displayBoard(movesNum);
                 } else {
                     help();
                 }
+            }
+
+            if(this.model.isSolution()){
+                displayBoard(movesNum);
+                System.out.println("YOU WIN!");
+                break;
             }
         }
     }
@@ -64,14 +71,14 @@ public class LunarLandingPTUI implements Observer< LunarLandingModel, Object > {
     }
 
     public void help(){
-        System.out.println("l(oad) f -- load new puzzle from file f");
-        System.out.println("r(eload) -- reload current puzzle");
-        System.out.println("m(ove) d -- move tipper in d direction");
-        System.out.println("            UP, DOWN, LEFT, RIGHT");
-        System.out.println("hi(nt)   -- receive hint");
-        System.out.println("s(how)   -- display the board");
-        System.out.println("he(lp)   -- show all commands");
-        System.out.println("q(uit)   -- quit the game");
+        System.out.println("l(oad) f     -- load new puzzle from file f");
+        System.out.println("r(eload)     -- reload current puzzle");
+        System.out.println("m(ove) x y d -- move robot at x,y in d direction");
+        System.out.println("                UP, DOWN, LEFT, RIGHT");
+        System.out.println("hi(nt)       -- receive hint");
+        System.out.println("s(how)       -- display the board");
+        System.out.println("he(lp)       -- show all commands");
+        System.out.println("q(uit)       -- quit the game");
     }
 
 
