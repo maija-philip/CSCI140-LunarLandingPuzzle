@@ -1,5 +1,6 @@
 package puzzles.tipover.model;
 import puzzles.lunarlanding.model.LunarLandingConfig;
+import solver.Solver;
 import util.Observer;
 
 import java.io.FileNotFoundException;
@@ -140,7 +141,10 @@ public class TipOverModel {
     }
 
     public void hint(){
-        System.out.println("Hint");
+        Solver<TipOverConfig> TipSolver = new Solver<>(currentConfig);
+        ArrayList<TipOverConfig> path = TipSolver.solve(currentConfig);
+        currentConfig = path.get(1);
+
     }
 
     public void addObserver( Observer< TipOverModel, Object > obs ) {

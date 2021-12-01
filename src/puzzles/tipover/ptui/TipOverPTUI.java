@@ -43,6 +43,8 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
                     this.movesNum+=1;
                 } else if (words[0].startsWith("hi")){
                     this.model.hint();
+                    this.movesNum+=1;
+                    displayBoard(movesNum);
                 } else if (words[0].startsWith("s")){
                     displayBoard(movesNum);
                 } else {
