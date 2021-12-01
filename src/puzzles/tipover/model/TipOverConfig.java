@@ -166,7 +166,7 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
     }
 
 
-    private TipOverConfig TippingAttempt(TipOverConfig c, String direction){
+    public TipOverConfig TippingAttempt(TipOverConfig c, String direction){
         int x = c.tipRow;
         int y = c.tipCol;
 
