@@ -1,6 +1,7 @@
 package puzzles.tipover.model;
 import util.Observer;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,9 +30,14 @@ public class TipOverModel {
      *   method works with, and returns, objects of type Configuration.
      */
 
-    public TipOverModel(){
+    public TipOverModel(String filename){
         this.observers = new LinkedList<>();
-
+        try{
+            currentConfig = new TipOverConfig(filename);
+        } catch(FileNotFoundException e){
+            System.out.println("File \"" + filename + "\" not found");
+            return;
+        }
         this.reload();
     }
 
@@ -53,6 +59,10 @@ public class TipOverModel {
 
     public void addObserver( Observer< TipOverModel, Object > obs ) {
         this.observers.add( obs );
+    }
+
+    public TipOverConfig getCurrentConfig(){
+        return currentConfig;
     }
 
 }

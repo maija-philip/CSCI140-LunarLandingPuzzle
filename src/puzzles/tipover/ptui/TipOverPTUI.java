@@ -13,11 +13,11 @@ import util.Observer;
 public class TipOverPTUI implements Observer<TipOverModel, Object > {
 
     private TipOverModel model;
-    private int tempNum = 5;
+    private int movesNum;
     private int[][] tempBoard = new int[5][4];
 
-    public TipOverPTUI(){
-        this.model = new TipOverModel();
+    public TipOverPTUI(String filename){
+        this.model = new TipOverModel(filename);
         initializeView();
     }
 
@@ -36,10 +36,11 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
                     this.model.reload();
                 } else if (words[0].startsWith("m")){
                     this.model.move(words[1]);
+                    this.movesNum+=1;
                 } else if (words[0].startsWith("hi")){
                     this.model.hint();
                 } else if (words[0].startsWith("s")){
-                    displayBoard(tempNum, tempBoard);
+                    displayBoard(movesNum);
                 } else {
                     help();
                 }
@@ -52,14 +53,16 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
         update(this.model,null);
     }
 
-    public void displayBoard(int numMoves, int[][] board){
-        System.out.println("Behold, a board!");
+    public void displayBoard(int numMoves){
+        System.out.println("Move " + numMoves + ": ");
+        System.out.println(this.model.getCurrentConfig());
     }
 
     public void help(){
         System.out.println("l(oad)   -- load new puzzle from file");
         System.out.println("r(eload) -- reload current puzzle");
         System.out.println("m(ove) d -- move tipper in d direction");
+        System.out.println("            n(orth), so(uth), e(ast), w(est)");
         System.out.println("hi(nt)   -- receive hint");
         System.out.println("s(how)   -- display the board");
         System.out.println("he(lp)   -- show all commands");
@@ -71,7 +74,7 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
     }
 
     public static void main( String[] args ) {
-        TipOverPTUI ptui = new TipOverPTUI();
+        TipOverPTUI ptui = new TipOverPTUI(args[0]);
         ptui.run();
     }
 }
