@@ -1,4 +1,5 @@
 package puzzles.tipover.model;
+import puzzles.lunarlanding.model.LunarLandingConfig;
 import util.Observer;
 
 import java.io.FileNotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 public class TipOverModel {
 
     private TipOverConfig currentConfig;
+    private String currentFilename;
 
     private List<Observer<TipOverModel, Object>> observers;
 
@@ -32,6 +34,7 @@ public class TipOverModel {
 
     public TipOverModel(String filename){
         this.observers = new LinkedList<>();
+        this.currentFilename = filename;
         try{
             currentConfig = new TipOverConfig(filename);
         } catch(FileNotFoundException e){
@@ -41,12 +44,44 @@ public class TipOverModel {
         this.reload();
     }
 
-    public void load(){
-        System.out.println("Load...");
+    public void load(String fileNum){
+        System.out.println("load");
+
+        String filename = "";
+        switch(fileNum){
+            case "0" -> filename = "data/tipover/tipover-0.txt";
+            case "1" -> filename = "data/tipover/tipover-1.txt";
+            case "2" -> filename = "data/tipover/tipover-2.txt";
+            case "3" -> filename = "data/tipover/tipover-3.txt";
+            case "4" -> filename = "data/tipover/tipover-4.txt";
+            case "5" -> filename = "data/tipover/tipover-5.txt";
+            case "6" -> filename = "data/tipover/tipover-6.txt";
+            case "7" -> filename = "data/tipover/tipover-7.txt";
+            case "8" -> filename = "data/tipover/tipover-8.txt";
+            case "9" -> filename = "data/tipover/tipover-9.txt";
+            case "a" -> filename = "data/tipover/tipover-a.txt";
+        }
+
+        try {
+            this.currentConfig = new TipOverConfig(filename);
+        } catch (FileNotFoundException e) {
+            System.out.println("File \"" + filename + "\" not found");
+            return;
+        }
+
+        this.currentFilename = filename;
+        //this.reset();
     }
 
     public void reload(){
-        System.out.println("Reload...");
+        System.out.println("reload");
+        try {
+            currentConfig = new TipOverConfig(currentFilename);
+        } catch (FileNotFoundException e) {
+            System.out.println("File \"" + currentFilename + "\" not found");
+            return;
+        }
+        //this.reset();
     }
 
     public void move(String direction){

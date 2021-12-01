@@ -31,9 +31,13 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
                 if(words[0].startsWith("q")){
                     break;
                 } else if (words[0].startsWith("l")){
-                    this.model.load();
+                    this.model.load(words[1]);
+                    this.movesNum = 0;
+                    displayBoard(movesNum);
                 } else if (words[0].startsWith("r")){
                     this.model.reload();
+                    this.movesNum = 0;
+                    displayBoard(movesNum);
                 } else if (words[0].startsWith("m")){
                     this.model.move(words[1]);
                     this.movesNum+=1;
@@ -65,10 +69,11 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
     }
 
     public void help(){
-        System.out.println("l(oad)   -- load new puzzle from file");
+        System.out.println("l(oad) f -- load new puzzle from file identifier f");
+        System.out.println("            f = 0,1,2,3,4,5,6,7,8,9,a");
         System.out.println("r(eload) -- reload current puzzle");
         System.out.println("m(ove) d -- move tipper in d direction");
-        System.out.println("            UP, DOWN, LEFT, RIGHT");
+        System.out.println("            d = UP, DOWN, LEFT, or RIGHT");
         System.out.println("hi(nt)   -- receive hint");
         System.out.println("s(how)   -- display the board");
         System.out.println("he(lp)   -- show all commands");
