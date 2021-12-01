@@ -204,7 +204,7 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
     }
 
     private boolean isCoordinateInGrid(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
+        return x >= 0 && x < height && y >= 0 && y < width;
     }
 
     private ArrayList<int[]> getDirections(TipOverConfig c){
