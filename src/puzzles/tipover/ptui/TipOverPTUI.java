@@ -62,7 +62,7 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
         System.out.println("l(oad)   -- load new puzzle from file");
         System.out.println("r(eload) -- reload current puzzle");
         System.out.println("m(ove) d -- move tipper in d direction");
-        System.out.println("            n(orth), so(uth), e(ast), w(est)");
+        System.out.println("            UP, DOWN, LEFT, RIGHT");
         System.out.println("hi(nt)   -- receive hint");
         System.out.println("s(how)   -- display the board");
         System.out.println("he(lp)   -- show all commands");
@@ -70,7 +70,7 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
     }
 
     public void update(TipOverModel o, Object arg){
-        System.out.println("updating...");
+        displayBoard(this.movesNum);
     }
 
     public static void main( String[] args ) {

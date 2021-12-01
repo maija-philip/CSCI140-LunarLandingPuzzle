@@ -51,6 +51,38 @@ public class TipOverModel {
 
     public void move(String direction){
         System.out.println("Move " + direction + "...");
+        int x = currentConfig.getTipRow();
+        int y = currentConfig.getTipCol();
+        switch (direction) {
+            case "UP" -> x--;
+            case "RIGHT" -> y++;
+            case "DOWN" -> x++;
+            case "LEFT" -> y--;
+        }
+        if(currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] == 1){
+            moveCrate(x, y);
+        } else if (currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] > 1){
+            moveTower(x, y);
+        }
+    }
+
+    private void moveCrate(int row, int col){
+        if(currentConfig.isCoordinateInGrid(row,col)){
+            if(currentConfig.getBoard()[row][col] > 0){
+                TipOverConfig copy = new TipOverConfig(currentConfig);
+                copy.setTipRow(row);
+                copy.setTipCol(col);
+                currentConfig = copy;
+            } else {
+                System.out.println("Illegal Move (zero)");
+            }
+        } else {
+            System.out.println("Illegal Move (off board)");
+        }
+    }
+
+    private void moveTower(int row, int col){
+
     }
 
     public void hint(){

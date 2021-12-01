@@ -204,7 +204,7 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
         return null;
     }
 
-    private boolean isCoordinateInGrid(int x, int y) {
+    public boolean isCoordinateInGrid(int x, int y) {
         return x >= 0 && x < height && y >= 0 && y < width;
     }
 
@@ -329,5 +329,24 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
         return result;
     }
 
+    public int getTipRow(){
+        return this.tipRow;
+    }
+
+    public void setTipRow(int x){
+        this.tipRow = x;
+    }
+
+    public int getTipCol(){
+        return this.tipCol;
+    }
+
+    public void setTipCol(int x){
+        this.tipCol = x;
+    }
+
+    public int[][] getBoard(){
+        return this.board;
+    }
 
 }
