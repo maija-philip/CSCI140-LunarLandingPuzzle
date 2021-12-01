@@ -116,4 +116,12 @@ public class TipOverModel {
         return currentConfig;
     }
 
+    public boolean isSolution(){
+        boolean holding = false;
+        if(currentConfig.getTipRow()== currentConfig.getGoalRow() && currentConfig.getTipCol()== currentConfig.getGoalCol()){
+            holding = true;
+        }
+        return holding;
+    }
+
 }

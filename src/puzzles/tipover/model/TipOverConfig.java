@@ -345,6 +345,14 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
         this.tipCol = x;
     }
 
+    public int getGoalRow(){
+        return this.goalRow;
+    }
+
+    public int getGoalCol(){
+        return this.goalCol;
+    }
+
     public int[][] getBoard(){
         return this.board;
     }

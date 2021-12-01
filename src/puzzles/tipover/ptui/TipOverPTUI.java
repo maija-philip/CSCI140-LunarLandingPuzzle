@@ -45,7 +45,13 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
                     help();
                 }
             }
+            if(this.model.isSolution()){
+                displayBoard(movesNum);
+                System.out.println("YOU WIN!");
+                break;
+            }
         }
+
     }
 
     public void initializeView(){
