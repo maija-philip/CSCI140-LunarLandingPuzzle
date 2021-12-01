@@ -1,4 +1,10 @@
 package puzzles.tipover.model;
+import util.Observer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * DESCRIPTION
@@ -8,6 +14,8 @@ package puzzles.tipover.model;
 public class TipOverModel {
 
     private TipOverConfig currentConfig;
+
+    private List<Observer<TipOverModel, Object>> observers;
 
     /*
      * Code here includes...
@@ -20,4 +28,31 @@ public class TipOverModel {
      *   a cast of Config to TipOverConfig somewhere, since the solve
      *   method works with, and returns, objects of type Configuration.
      */
+
+    public TipOverModel(){
+        this.observers = new LinkedList<>();
+
+        this.reload();
+    }
+
+    public void load(){
+        System.out.println("Load...");
+    }
+
+    public void reload(){
+        System.out.println("Reload...");
+    }
+
+    public void move(String direction){
+        System.out.println("Move " + direction + "...");
+    }
+
+    public void hint(){
+        System.out.println("Hint");
+    }
+
+    public void addObserver( Observer< TipOverModel, Object > obs ) {
+        this.observers.add( obs );
+    }
+
 }

@@ -1,5 +1,6 @@
 package puzzles.tipover.model;
 
+import puzzles.lunarlanding.model.LunarLandingConfig;
 import solver.Configuration;
 
 import java.io.File;
@@ -310,6 +311,22 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
             text += "\n";
         }
         return top + line + text;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if (o instanceof TipOverConfig other) {
+            result = true;
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (this.board[i][j] != other.board[i][j]) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 
