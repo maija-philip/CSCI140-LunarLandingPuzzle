@@ -62,7 +62,7 @@ public class TipOverModel {
         if(currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] == 1){
             moveCrate(x, y);
         } else if (currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] > 1){
-            moveTower(x, y);
+            moveTower(x, y, direction);
         }
     }
 
@@ -74,14 +74,33 @@ public class TipOverModel {
                 copy.setTipCol(col);
                 currentConfig = copy;
             } else {
-                System.out.println("Illegal Move (zero)");
+                System.out.println("Illegal Move (crate)");
             }
         } else {
-            System.out.println("Illegal Move (off board)");
+            System.out.println("Illegal Move (off board - crate)");
         }
     }
 
-    private void moveTower(int row, int col){
+    private void moveTower(int row, int col, String direction){
+        if(currentConfig.isCoordinateInGrid(row,col)){
+            if(currentConfig.getBoard()[row][col]==0){
+                TipOverConfig hold = currentConfig.TippingAttempt(currentConfig,direction);
+                if(hold!=null){
+                    hold.setTipRow(row);
+                    hold.setTipCol(col);
+                    currentConfig = hold;
+                } else {
+                    System.out.println("Illegal Move (tower - idk)");
+                }
+            } else if(currentConfig.getBoard()[row][col] > 0){
+                TipOverConfig copy = new TipOverConfig(currentConfig);
+                copy.setTipRow(row);
+                copy.setTipCol(col);
+                currentConfig = copy;
+            }
+        } else {
+            System.out.println("Illegal Move (off board - tower)");
+        }
 
     }
 
