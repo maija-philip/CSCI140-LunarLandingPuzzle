@@ -353,6 +353,14 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
         return this.goalCol;
     }
 
+    public int getHeight(){
+        return this.height;
+    }
+
+    public int getWidth(){
+        return this.width;
+    }
+
     public int[][] getBoard(){
         return this.board;
     }
