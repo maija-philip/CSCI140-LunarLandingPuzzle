@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * DESCRIPTION
- * @author YOUR NAME HERE
+ * @author Maija Philip
  * November 2021
  */
 public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
@@ -106,7 +106,7 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
 
         } // try-with-resources, the file is closed automatically
 
-        //System.out.println(this);
+        System.out.println(this);
     }
 
     private LunarLandingConfig(LunarLandingConfig copy) {
@@ -150,9 +150,15 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
         return lunarLandingConfig.board[goalRow][goalCol].equals("!E");
     }
 
+    int countttt = 0;
+
     @Override
     public ArrayList<LunarLandingConfig> getNeighbors(LunarLandingConfig lunarLandingConfig) {
         //System.out.println("getNeighbors");
+        // countttt++;
+        if (countttt > 10) {
+            return new ArrayList<>();
+        }
 
         ArrayList<LunarLandingConfig> neighbors = new ArrayList<>();
 
@@ -196,12 +202,13 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
 
                     nextMove.robots.replace(letter, new int[]{x, y});
 
+                    //System.out.println(nextMove);
                     neighbors.add(nextMove);
                 }
             }
 
         }
-
+        //System.out.println("how many neighbors " + neighbors.size());
         return neighbors;
     }
 

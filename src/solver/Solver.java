@@ -43,12 +43,17 @@ public class Solver<E> {
                 if (!predecessorMap.containsKey(n)) {
                     predecessorMap.put(n, current);
                     queue.add(n);
+
+                }
+                else {
+                    System.out.println("Contains it");
                 }
             }
 
             if (queue.size() == 0) {
                 return null;
             }
+            System.out.println(queue.size() + " things in queue");
             current = queue.remove(0);
         }
 
