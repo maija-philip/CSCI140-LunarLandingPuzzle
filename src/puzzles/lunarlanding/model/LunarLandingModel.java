@@ -6,6 +6,7 @@ import util.Observer;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -135,4 +136,29 @@ public class LunarLandingModel {
             obs.update( this, arg );
         }
     }
+
+    /**
+     * gives the hashmap of robots
+     * @return - hashmap of robots
+     */
+    public HashMap<String, int[]> getRobots() {return currentConfig.getRobots();}
+
+    /**
+     * gives the number of rows on the board
+     * @return - gives the number of rows on the board
+     */
+    public int getRows() {return currentConfig.getHeight();}
+
+    /**
+     * gives the number of columns on the board
+     * @return - gives the number of columns on the board
+     */
+    public int getColumns() {return currentConfig.getWidth();}
+
+    /**
+     * gives the goal coordinates as an int[] like x, y
+     * @return - gives {x, y} of goal coordinates
+     */
+    public int[] getGoal() {return currentConfig.getGoal();}
+
 }

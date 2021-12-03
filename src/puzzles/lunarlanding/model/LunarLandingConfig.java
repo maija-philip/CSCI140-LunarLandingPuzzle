@@ -350,6 +350,20 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
      * @return - width of the board
      */
     public int getWidth() {return width;}
+    /**
+     * gives the hashmap of robots
+     * @return - hashmap of robots
+     */
+    public HashMap<String, int[]> getRobots() {return robots;}
+    /**
+     * gives the goal coordinates as an int[] like x, y
+     * @return - gives {x, y} of goal coordinates
+     */
+    public int[] getGoal() {return new int[]{goalRow, goalCol};}
+
+
+
+
 
     public LunarLandingConfig playMove(int x, int y, String direction, LunarLandingConfig current) {
 
