@@ -45,15 +45,13 @@ public class Solver<E> {
                     queue.add(n);
 
                 }
-                else {
-                    System.out.println("Contains it");
-                }
+
             }
 
             if (queue.size() == 0) {
                 return null;
             }
-            System.out.println(queue.size() + " things in queue");
+            //System.out.println(queue.size() + " things in queue");
             current = queue.remove(0);
         }
 

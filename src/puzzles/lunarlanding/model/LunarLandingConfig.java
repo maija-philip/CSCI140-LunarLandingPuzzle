@@ -106,7 +106,7 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
 
         } // try-with-resources, the file is closed automatically
 
-        System.out.println(this);
+        //System.out.println(this);
     }
 
     private LunarLandingConfig(LunarLandingConfig copy) {
