@@ -39,7 +39,12 @@ public class TipOverGUI extends Application
     private Label feedback;
     private ArrayList<Label> squares;
 
-    //private static final Background WHITE = new Background(new BackgroundFill(Color.WHITE,null,null));
+    private static final Background WHITE = new Background(new BackgroundFill(Color.WHITE,null,null));
+    private static final double WIDTH = 640;
+    private static final double HEIGHT = 480;
+
+    private static final int SQUARES_FONT_SIZE = 40;
+    private static final int BUTTONS_FONT_SIZE = 20;
 
     @Override
     public void init() throws Exception {
@@ -61,8 +66,9 @@ public class TipOverGUI extends Application
         GridPane gridPane = new GridPane();
         for (int i = 0; i < this.model.getCurrentConfig().getHeight(); i++) {
             for (int j = 0; j < this.model.getCurrentConfig().getWidth(); j++) {
-                Label label = new Label(" " + this.model.getCurrentConfig().getBoard()[i][j] + " ");
-                gridPane.add(label,i,j);
+                Label square = new Label(" " + this.model.getCurrentConfig().getBoard()[i][j] + " ");
+                square.setStyle("-fx-font: " + SQUARES_FONT_SIZE + " arial;");
+                gridPane.add(square,i,j);
             }
         }
         borderPane.setLeft(gridPane);
@@ -72,20 +78,34 @@ public class TipOverGUI extends Application
         VBox sideButtons = new VBox();
 
         BorderPane controlButtons = new BorderPane();
-        Button up = new Button("^");
-        Button down = new Button("\\/");
-        Button left = new Button("<");
-        Button right = new Button(">");
+        Button up = new Button("⇧");
+        Button down = new Button("⇩");
+        Button left = new Button("⇦");
+        Button right = new Button("⇨");
+        Button center = new Button(" ");
+        center.setBackground(WHITE);
+        up.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
+        down.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
+        left.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
+        right.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
+        center.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
         controlButtons.setTop(up);
         controlButtons.setBottom(down);
         controlButtons.setLeft(left);
         controlButtons.setRight(right);
+        controlButtons.setCenter(center);
         BorderPane.setAlignment(up, Pos.CENTER);
         BorderPane.setAlignment(down, Pos.CENTER);
+        BorderPane.setAlignment(left,Pos.CENTER_LEFT);
+        BorderPane.setAlignment(right,Pos.CENTER_RIGHT);
 
         Button load = new Button("Load");
         Button reload = new Button("Reload");
         Button hint = new Button("Hint");
+
+        load.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
+        reload.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
+        hint.setStyle("-fx-font: " + BUTTONS_FONT_SIZE + " arial;");
 
         sideButtons.getChildren().addAll(load,reload,hint);
         sideBar.getChildren().addAll(controlButtons,sideButtons);
@@ -96,7 +116,7 @@ public class TipOverGUI extends Application
         reload.setOnAction((event) -> {System.out.println("reload pressed");});
         hint.setOnAction((event) -> {System.out.println("hint pressed");});
 
-        Scene scene = new Scene( borderPane, 640, 480 );
+        Scene scene = new Scene( borderPane, WIDTH, HEIGHT );
         stage.setScene( scene );
         stage.setTitle( "Tip Over" );
 
