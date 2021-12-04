@@ -42,6 +42,7 @@ public class LunarLandingPTUI implements Observer< LunarLandingModel, Object > {
                 } else if (words[0].startsWith("m")){
                     this.model.move(words[1], words[2], words[3]);
                     this.movesNum+=1;
+                    System.out.println(this.model.getFeedback());
                 } else if (words[0].startsWith("hi")){
                     this.model.hint();
                     displayBoard(movesNum);

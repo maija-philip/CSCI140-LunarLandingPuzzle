@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import puzzles.lunarlanding.model.LunarLandingModel;
 import util.Observer;
@@ -39,6 +40,7 @@ public class LunarLandingGUI extends Application
     private int COLS;
 
     /** GUI Elements to keep track of */
+    private GridPane gridPane;
     private Label feedback;
     private Button[][] gridSpots;
 
@@ -50,16 +52,15 @@ public class LunarLandingGUI extends Application
     private int[] clickedCoords;
 
 
-
     @Override
     public void init() throws Exception {
-        System.out.println("init: Initialize and connect to model!");
+        // System.out.println("init: Initialize and connect to model!");
         List<String> args = getParameters().getRaw();
 
         this.model = new LunarLandingModel(args.get(0));
         this.model.addObserver( this );
 
-        System.out.println(args.get(0));
+        // System.out.println(args.get(0));
         //update( this.model, null );
     }
 
@@ -83,7 +84,7 @@ public class LunarLandingGUI extends Application
         loadImages();
 
         // make board grid
-        GridPane gridPane = new GridPane();
+        this.gridPane = new GridPane();
         makeBoard(gridPane);
         updateGrid(this.model.getRobots());
 
@@ -118,9 +119,9 @@ public class LunarLandingGUI extends Application
 
 
         // create load/reload/hint buttons and place them
-        Button load = new Button("load");
-        Button reload = new Button("reload");
-        Button hint = new Button("hint");
+        Button load = new Button("LOAD");
+        Button reload = new Button("RELOAD");
+        Button hint = new Button("HINT");
 
         vBox.getChildren().addAll(arrowContainer, load, reload, hint);
         borderPane.setRight(vBox);
@@ -131,37 +132,87 @@ public class LunarLandingGUI extends Application
 
         // up button action
         up.setOnAction((event) -> {
-            System.out.println("Up Pressed");
+            // System.out.println("Up Pressed");
+
+            if (clickedCoords[0] == -1) {
+                return;
+            }
+            this.model.move(clickedCoords[0] + "", clickedCoords[1] + "", "UP");
+            update(this.model, null);
+
         });
 
         // right button action
         right.setOnAction((event) -> {
-            System.out.println("Right Pressed");
+            // System.out.println("Right Pressed");
+
+            if (clickedCoords[0] == -1) {
+                return;
+            }
+            this.model.move(clickedCoords[0] + "", clickedCoords[1] + "", "RIGHT");
+            update(this.model, null);
+
         });
 
         // down button action
         down.setOnAction((event) -> {
-            System.out.println("Down Pressed");
+            // System.out.println("Down Pressed");
+
+            if (clickedCoords[0] == -1) {
+                return;
+            }
+            this.model.move(clickedCoords[0] + "", clickedCoords[1] + "", "DOWN");
+            update(this.model, null);
+
         });
 
         // left button action
         left.setOnAction((event) -> {
-            System.out.println("Left Pressed");
+            // System.out.println("Left Pressed");
+
+            if (clickedCoords[0] == -1) {
+                return;
+            }
+            this.model.move(clickedCoords[0] + "", clickedCoords[1] + "", "LEFT");
+            update(this.model, null);
+
         });
 
         // load button action
         load.setOnAction((event) -> {
-            System.out.println("Load Pressed");
+            // System.out.println("Load Pressed");
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose New Board");
+            File file = fileChooser.showOpenDialog(stage);
+
+            if (file != null) {
+
+                this.model.load(file.getPath());
+                makeBoard(gridPane);
+                update(this.model, null);
+                feedback.setText("File Loaded");
+            }
+
+
         });
 
         // reload button action
         reload.setOnAction((event) -> {
-            System.out.println("Reload Pressed");
+            // System.out.println("Reload Pressed");
+
+            this.model.reload();
+            makeBoard(gridPane);
+            update(this.model, null);
+            feedback.setText("File Loaded");
         });
 
         // hint button action
         hint.setOnAction((event) -> {
-            System.out.println("Hint Pressed");
+            // System.out.println("Hint Pressed");
+
+            this.model.hint();
+            update(this.model, null);
         });
 
 
@@ -175,7 +226,7 @@ public class LunarLandingGUI extends Application
     private void loadImages() {
         // load images
         this.explorer = new Image(getClass().getResourceAsStream("resources/explorer.png"));
-        this.robots = new Image[8];
+        this.robots = new Image[9];
 
         this.robots[0] = new Image(getClass().getResourceAsStream("resources/robot-blue.png"));
         this.robots[1] = new Image(getClass().getResourceAsStream("resources/robot-green.png"));
@@ -185,6 +236,7 @@ public class LunarLandingGUI extends Application
         this.robots[5] = new Image(getClass().getResourceAsStream("resources/robot-purple.png"));
         this.robots[6] = new Image(getClass().getResourceAsStream("resources/robot-white.png"));
         this.robots[7] = new Image(getClass().getResourceAsStream("resources/robot-yellow.png"));
+        this.robots[8] = this.explorer;
     }
 
     private void makeBoard(GridPane gridPane) {
@@ -272,6 +324,7 @@ public class LunarLandingGUI extends Application
             case "R" -> imageNumber = 5;
             case "W" -> imageNumber = 6;
             case "Y" -> imageNumber = 7;
+            case "E" -> imageNumber = 8;
         }
 
         space.setGraphic(new ImageView(robots[imageNumber]));
@@ -281,7 +334,21 @@ public class LunarLandingGUI extends Application
 
     @Override
     public void update( LunarLandingModel lunarLandingModel, Object o ) {
-        System.out.println( "My model has changed! (DELETE THIS LINE)");
+
+        // move the robots
+        updateGrid(this.model.getRobots());
+
+        // tell the user if they won or not
+        if (this.model.isSolution()) {
+            feedback.setText("YOU WIN!");
+        }
+        else
+        {
+            feedback.setText(this.model.getFeedback());
+        }
+
+        // this.model.printBoard();
+
     }
 
     public static void main( String[] args ) {

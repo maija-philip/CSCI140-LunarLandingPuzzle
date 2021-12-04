@@ -25,6 +25,8 @@ public class LunarLandingModel {
 
     private LunarLandingConfig currentConfig;
 
+    private String feedback;
+
     /*
      * Code here includes...
      * Additional data variables for anything needed beyond what is in
@@ -50,6 +52,7 @@ public class LunarLandingModel {
             return;
         }
 
+        this.feedback = "";
         this.currentFilename = filename;
         this.reset();
     }
@@ -58,7 +61,7 @@ public class LunarLandingModel {
      * resets the board
      */
     public void reset() {
-        System.out.println("reset");
+        //System.out.println("reset");
 
     }
 
@@ -95,17 +98,31 @@ public class LunarLandingModel {
             x = Integer.parseInt(givenX);
             y = Integer.parseInt(givenY);
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage().substring(18) + " is not a coordinate, please enter a number");
+            // System.out.println(e.getMessage().substring(18) + " is not a coordinate, please enter a number");
+            feedback = "Illegal Move";
             return;
         }
 
         currentConfig = currentConfig.playMove(x, y, direction, currentConfig);
+        feedback = currentConfig.geFeedback();
 
     }
 
     public void hint(){
+
         Solver<LunarLandingConfig> TipSolver = new Solver<>(currentConfig);
         ArrayList<LunarLandingConfig> path = TipSolver.solve(currentConfig);
+
+        if (path == null) {
+            feedback = "Unsolvable board";
+            return;
+        }
+
+        if (path.isEmpty() || path.size() < 2) {
+            System.out.println("You already won!");
+            return;
+        }
+
         currentConfig = path.get(1);
 
     }
@@ -160,5 +177,21 @@ public class LunarLandingModel {
      * @return - gives {x, y} of goal coordinates
      */
     public int[] getGoal() {return currentConfig.getGoal();}
+
+    /**
+     * gives the feedback the model needs to give the UIs after the move method
+     * @return - gives the model's feedback
+     */
+    public String getFeedback() {return feedback;}
+
+    /**
+     * for testing, prints the board and if it's the solution or not
+     */
+    public void printBoard() {
+        System.out.println(currentConfig);
+        System.out.println("This is the solution: " + isSolution());
+    }
+
+
 
 }

@@ -29,6 +29,8 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
     /* Robots */
     private HashMap<String, int[]> robots;
 
+    private String feedback;
+
 
 
     /**
@@ -67,6 +69,7 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
 
             // set up and place the robots
             robots = new HashMap<>();
+            feedback = "";
 
             String s = in.nextLine();
             s = in.nextLine();
@@ -127,6 +130,7 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
         this.goalRow = copy.goalRow;
         this.goalCol = copy.goalCol;
 
+        this.feedback = copy.feedback;
 
         this.explorerRow = copy.explorerRow;
         this.explorerCol = copy.explorerCol;
@@ -150,15 +154,10 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
         return lunarLandingConfig.board[goalRow][goalCol].equals("!E");
     }
 
-    int countttt = 0;
 
     @Override
     public ArrayList<LunarLandingConfig> getNeighbors(LunarLandingConfig lunarLandingConfig) {
         //System.out.println("getNeighbors");
-        // countttt++;
-        if (countttt > 10) {
-            return new ArrayList<>();
-        }
 
         ArrayList<LunarLandingConfig> neighbors = new ArrayList<>();
 
@@ -360,6 +359,11 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
      * @return - gives {x, y} of goal coordinates
      */
     public int[] getGoal() {return new int[]{goalRow, goalCol};}
+    /**
+     * gives the feedback the UI needs
+     * @return - feedback for the UI to display
+     */
+    public String geFeedback() {return feedback;}
 
 
 
@@ -368,21 +372,25 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
     public LunarLandingConfig playMove(int x, int y, String direction, LunarLandingConfig current) {
 
         if (!isCoordinateInGrid(x, y)) {
-            System.out.println("The coordinates (" + x + ", " + y + ") are not in the grid");
+            // System.out.println("The coordinates (" + x + ", " + y + ") are not in the grid");
+            feedback = "Illegal Move";
             return current;
         }
 
         if (!direction.equals("UP") && !direction.equals("RIGHT") && !direction.equals("DOWN") && !direction.equals("LEFT")) {
-            System.out.println(direction + " is not a valid direction");
-            System.out.println("valid directions are UP, DOWN, LEFT, RIGHT");
+            // System.out.println(direction + " is not a valid direction");
+            // System.out.println("valid directions are UP, DOWN, LEFT, RIGHT");
+            feedback = "Illegal Move";
             return current;
         }
 
         if (board[x][y].equals("_") || board[x][y].equals("!")) {
-            System.out.println("There is no robot or explorer at (" + x + ", " + y + ")");
+            // System.out.println("There is no robot or explorer at (" + x + ", " + y + ")");
+            feedback = "Illegal Move";
             return current;
 
         }
+        feedback = "";
 
         return createMove(x, y, direction, current);
     }
@@ -393,7 +401,8 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
 
         // if move is illegal, returns error message
         if (coordinates[0] == -1) {
-            System.out.println("That is not a legal move");
+            // System.out.println("That is not a legal move");
+            feedback = "Illegal Move";
             return current;
         }
 
