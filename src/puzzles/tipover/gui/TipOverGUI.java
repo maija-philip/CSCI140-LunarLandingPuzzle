@@ -218,7 +218,9 @@ public class TipOverGUI extends Application
     public void update( TipOverModel tipOverModel, Object o ) {
         //System.out.println( "My model has changed! (DELETE THIS LINE)");
 
-        if (this.model.isSolution(this.model.getCurrentConfig())){
+        if(this.model.getHintWin()){
+            this.feedback.setText("I WIN!");
+        } else if (this.model.isSolution(this.model.getCurrentConfig())){
             this.feedback.setText("YOU WIN!");
         } else {
             feedback.setText(this.model.getFeedback());

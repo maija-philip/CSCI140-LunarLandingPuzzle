@@ -20,6 +20,8 @@ public class TipOverModel {
     private String currentFilename;
     private String feedback;
 
+    private boolean hintWin = false;
+
     private List<Observer<TipOverModel, Object>> observers;
 
     /*
@@ -49,7 +51,7 @@ public class TipOverModel {
 
     public void load(String filename){
         System.out.println("load");
-
+        this.hintWin = false;
         try {
             this.currentConfig = new TipOverConfig(filename);
         } catch (FileNotFoundException e) {
@@ -63,6 +65,7 @@ public class TipOverModel {
 
     public void reload(){
         System.out.println("reload");
+        this.hintWin = false;
         try {
             currentConfig = new TipOverConfig(currentFilename);
         } catch (FileNotFoundException e) {
@@ -148,7 +151,7 @@ public class TipOverModel {
         }
 
         if(isSolution(path.get(1))){
-            feedback = "I WON!";
+            this.hintWin = true;
         }
 
         currentConfig = path.get(1);
@@ -169,6 +172,10 @@ public class TipOverModel {
             holding = true;
         }
         return holding;
+    }
+
+    public boolean getHintWin(){
+        return this.hintWin;
     }
 
     public String getFeedback() {return feedback;}
