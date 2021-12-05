@@ -43,8 +43,7 @@ public class TipOverGUI extends Application
     private static final Background WHITE = new Background(new BackgroundFill(Color.WHITE,null,null));
     private static final Background RED = new Background(new BackgroundFill(Color.RED,null,null));
     private static final Background PINK = new Background(new BackgroundFill(Color.PINK,null,null));
-    private static final double WIDTH = 640;
-    private static final double HEIGHT = 480;
+
 
     private static final int SQUARES_FONT_SIZE = 40;
     private static final int BUTTONS_FONT_SIZE = 20;
@@ -161,11 +160,11 @@ public class TipOverGUI extends Application
         });
 
 
-        Scene scene = new Scene( borderPane, WIDTH, HEIGHT );
+        Scene scene = new Scene( borderPane);
         stage.setScene( scene );
         stage.setTitle( "Tip Over" );
 
-        System.out.println("start()");
+        //System.out.println("start()");
         stage.show();
     }
 
@@ -219,9 +218,9 @@ public class TipOverGUI extends Application
         //System.out.println( "My model has changed! (DELETE THIS LINE)");
 
         if(this.model.getHintWin()){
-            this.feedback.setText("I WIN!");
+            this.feedback.setText("I WON!");
         } else if (this.model.isSolution(this.model.getCurrentConfig())){
-            this.feedback.setText("YOU WIN!");
+            this.feedback.setText("YOU WON!");
         } else {
             feedback.setText(this.model.getFeedback());
         }

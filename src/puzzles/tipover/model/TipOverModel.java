@@ -50,7 +50,7 @@ public class TipOverModel {
     }
 
     public void load(String filename){
-        System.out.println("load");
+        //System.out.println("load");
         this.hintWin = false;
         try {
             this.currentConfig = new TipOverConfig(filename);
@@ -64,7 +64,7 @@ public class TipOverModel {
     }
 
     public void reload(){
-        System.out.println("reload");
+        //System.out.println("reload");
         this.hintWin = false;
         try {
             currentConfig = new TipOverConfig(currentFilename);
@@ -77,7 +77,7 @@ public class TipOverModel {
 
     public void move(String direction){
         if(!isSolution(currentConfig)) {
-            System.out.println("Move " + direction + "...");
+            //System.out.println("Move " + direction + "...");
             int x = currentConfig.getTipRow();
             int y = currentConfig.getTipCol();
             switch (direction) {
@@ -103,10 +103,10 @@ public class TipOverModel {
                 currentConfig = copy;
                 this.feedback = "";
             } else {
-                this.feedback = "Illegal Move (crate)";
+                this.feedback = "No crate or tower there";
             }
         } else {
-            this.feedback = "Illegal Move (off board - crate)";
+            this.feedback = "Can not go off board";
         }
         //System.out.println(currentConfig);
     }
@@ -121,7 +121,7 @@ public class TipOverModel {
                     currentConfig = hold;
                     this.feedback = "A tower has been tipped over";
                 } else {
-                    this.feedback = "Illegal Move (tower - idk)";
+                    this.feedback = "Can not go off board";
                 }
             } else if(currentConfig.getBoard()[row][col] > 0){
                 TipOverConfig copy = new TipOverConfig(currentConfig);
@@ -131,7 +131,7 @@ public class TipOverModel {
                 this.feedback = "";
             }
         } else {
-            this.feedback = "Illegal Move (off board - tower)";
+            this.feedback = "Can not go off board";
         }
         //System.out.println(currentConfig);
     }
@@ -146,7 +146,7 @@ public class TipOverModel {
         }
 
         if (path.isEmpty() || path.size() < 2) {
-            System.out.println("You already won!");
+            feedback = "You already won";
             return;
         }
 
