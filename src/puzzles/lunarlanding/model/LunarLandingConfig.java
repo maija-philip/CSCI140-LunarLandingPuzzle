@@ -319,7 +319,7 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
             result = true;
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    if (this.board[i][j] != other.board[i][j]) {
+                    if (!Objects.equals(this.board[i][j], other.board[i][j])) {
                         //System.out.println(i + ", " + j);
                         return false;
                     }
@@ -333,9 +333,7 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(width, height, goalRow, goalCol, explorerRow, explorerCol, robots);
-        result = 31 * result + Arrays.hashCode(board);
-        return result;
+        return Arrays.deepHashCode(board);
     }
 
 
