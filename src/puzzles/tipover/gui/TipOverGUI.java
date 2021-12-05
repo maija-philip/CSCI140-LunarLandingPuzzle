@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import puzzles.tipover.model.TipOverModel;
 import util.Observer;
@@ -33,11 +34,11 @@ public class TipOverGUI extends Application
 
     private TipOverModel model;
 
-    private int rows;
-    private int cols;
 
     private Label feedback;
+    private String labelText = "New file loaded.";
     private Label[][] squares;
+    private BorderPane borderPane;
 
     private static final Background WHITE = new Background(new BackgroundFill(Color.WHITE,null,null));
     private static final Background RED = new Background(new BackgroundFill(Color.RED,null,null));
@@ -59,31 +60,13 @@ public class TipOverGUI extends Application
 
     @Override
     public void start( Stage stage ) {
-        BorderPane borderPane = new BorderPane();
+        this.borderPane = new BorderPane();
 
-        this.feedback = new Label("It's a label!");
-        borderPane.setTop(this.feedback);
+        this.feedback = new Label(this.labelText);
+        this.borderPane.setTop(this.feedback);
         BorderPane.setAlignment(this.feedback, Pos.TOP_LEFT);
 
-        GridPane gridPane = new GridPane();
-        squares = new Label[this.model.getCurrentConfig().getHeight()][this.model.getCurrentConfig().getWidth()];
-        for (int i = 0; i < this.model.getCurrentConfig().getHeight(); i++) {
-            for (int j = 0; j < this.model.getCurrentConfig().getWidth(); j++) {
-                Label square = new Label(this.model.getCurrentConfig().getBoard()[i][j] + "");
-                square.setStyle("-fx-font: " + SQUARES_FONT_SIZE + " arial;");
-                if(i==this.model.getCurrentConfig().getGoalRow() & j==this.model.getCurrentConfig().getGoalCol()){
-                    square.setBackground(RED);
-                } else if (i==this.model.getCurrentConfig().getTipRow() & j==this.model.getCurrentConfig().getTipCol()){
-                    square.setBackground(PINK);
-                } else {
-                    square.setBackground(WHITE);
-                }
-                squares[i][j] = square;
-                gridPane.add(square,j,i);
-            }
-        }
-        borderPane.setLeft(gridPane);
-        BorderPane.setAlignment(gridPane,Pos.CENTER_LEFT);
+        makeBoard();
 
         VBox sideBar = new VBox();
         VBox sideButtons = new VBox();
@@ -145,12 +128,37 @@ public class TipOverGUI extends Application
 
         sideButtons.getChildren().addAll(load,reload,hint);
         sideBar.getChildren().addAll(controlButtons,sideButtons);
-        borderPane.setRight(sideBar);
+        this.borderPane.setRight(sideBar);
         BorderPane.setAlignment(sideBar, Pos.CENTER_RIGHT);
 
-        load.setOnAction((event) -> {System.out.println("load pressed");});
-        reload.setOnAction((event) -> {System.out.println("reload pressed");});
-        hint.setOnAction((event) -> {System.out.println("hint pressed");});
+        load.setOnAction((event) -> {
+            //System.out.println("load pressed");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose New Board");
+            File file = fileChooser.showOpenDialog(stage);
+
+            if (file != null) {
+
+                this.model.load(file.getPath());
+
+                makeBoard();
+                update(this.model, null);
+                this.feedback.setText("File Loaded");
+            }
+
+        });
+        reload.setOnAction((event) -> {
+            this.model.reload();
+            makeBoard();
+            update(this.model, null);
+            this.feedback.setText("File Loaded");
+            //System.out.println("reload pressed");
+        });
+        hint.setOnAction((event) -> {
+            this.model.hint();
+            update(this.model, null);
+            //System.out.println("hint pressed");
+        });
 
 
         Scene scene = new Scene( borderPane, WIDTH, HEIGHT );
@@ -161,14 +169,37 @@ public class TipOverGUI extends Application
         stage.show();
     }
 
+    public void makeBoard(){
+        GridPane gridPane = new GridPane();
+        squares = new Label[this.model.getCurrentConfig().getHeight()][this.model.getCurrentConfig().getWidth()];
+        for (int i = 0; i < this.model.getCurrentConfig().getHeight(); i++) {
+            for (int j = 0; j < this.model.getCurrentConfig().getWidth(); j++) {
+                Label square = new Label(" " + this.model.getCurrentConfig().getBoard()[i][j] + " ");
+                square.setStyle("-fx-font: " + SQUARES_FONT_SIZE + " arial;");
+                if(i==this.model.getCurrentConfig().getGoalRow() & j==this.model.getCurrentConfig().getGoalCol()){
+                    square.setBackground(RED);
+                } else if (i==this.model.getCurrentConfig().getTipRow() & j==this.model.getCurrentConfig().getTipCol()){
+                    square.setBackground(PINK);
+                } else {
+                    square.setBackground(WHITE);
+                }
+                this.squares[i][j] = square;
+                gridPane.add(square,j,i);
+            }
+        }
+        this.borderPane.setLeft(gridPane);
+        BorderPane.setAlignment(gridPane,Pos.CENTER_LEFT);
+
+    }
+
     public void updateBoard(int[][] numbers){
         for(int i=0 ; i < this.model.getCurrentConfig().getHeight(); i++){
             for(int j=0; j < this.model.getCurrentConfig().getWidth(); j++){
                 Label tempL = squares[i][j];
                 int tempN = numbers[i][j];
 
-                if(tempN != Integer.parseInt(tempL.getText())){
-                    tempL.setText(tempN + "");
+                if(tempN != Integer.parseInt(tempL.getText().trim())){
+                    tempL.setText( " " + tempN + " ");
                 }
 
                 if(i==this.model.getCurrentConfig().getGoalRow() & j==this.model.getCurrentConfig().getGoalCol()){
@@ -185,7 +216,13 @@ public class TipOverGUI extends Application
 
     @Override
     public void update( TipOverModel tipOverModel, Object o ) {
-        System.out.println( "My model has changed! (DELETE THIS LINE)");
+        //System.out.println( "My model has changed! (DELETE THIS LINE)");
+
+        if (this.model.isSolution(this.model.getCurrentConfig())){
+            this.feedback.setText("YOU WIN!");
+        } else {
+            feedback.setText(this.model.getFeedback());
+        }
 
         updateBoard(this.model.getCurrentConfig().getBoard());
     }

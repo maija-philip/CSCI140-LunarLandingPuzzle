@@ -18,6 +18,7 @@ public class TipOverModel {
 
     private TipOverConfig currentConfig;
     private String currentFilename;
+    private String feedback;
 
     private List<Observer<TipOverModel, Object>> observers;
 
@@ -36,6 +37,7 @@ public class TipOverModel {
     public TipOverModel(String filename){
         this.observers = new LinkedList<>();
         this.currentFilename = filename;
+        this.feedback = "";
         try{
             currentConfig = new TipOverConfig(filename);
         } catch(FileNotFoundException e){
@@ -45,23 +47,8 @@ public class TipOverModel {
         this.reload();
     }
 
-    public void load(String fileNum){
+    public void load(String filename){
         System.out.println("load");
-
-        String filename = "";
-        switch(fileNum){
-            case "0" -> filename = "data/tipover/tipover-0.txt";
-            case "1" -> filename = "data/tipover/tipover-1.txt";
-            case "2" -> filename = "data/tipover/tipover-2.txt";
-            case "3" -> filename = "data/tipover/tipover-3.txt";
-            case "4" -> filename = "data/tipover/tipover-4.txt";
-            case "5" -> filename = "data/tipover/tipover-5.txt";
-            case "6" -> filename = "data/tipover/tipover-6.txt";
-            case "7" -> filename = "data/tipover/tipover-7.txt";
-            case "8" -> filename = "data/tipover/tipover-8.txt";
-            case "9" -> filename = "data/tipover/tipover-9.txt";
-            case "a" -> filename = "data/tipover/tipover-a.txt";
-        }
 
         try {
             this.currentConfig = new TipOverConfig(filename);
@@ -86,19 +73,21 @@ public class TipOverModel {
     }
 
     public void move(String direction){
-        System.out.println("Move " + direction + "...");
-        int x = currentConfig.getTipRow();
-        int y = currentConfig.getTipCol();
-        switch (direction) {
-            case "UP" -> x--;
-            case "RIGHT" -> y++;
-            case "DOWN" -> x++;
-            case "LEFT" -> y--;
-        }
-        if(currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] == 1){
-            moveCrate(x, y);
-        } else if (currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] > 1){
-            moveTower(x, y, direction);
+        if(!isSolution(currentConfig)) {
+            System.out.println("Move " + direction + "...");
+            int x = currentConfig.getTipRow();
+            int y = currentConfig.getTipCol();
+            switch (direction) {
+                case "UP" -> x--;
+                case "RIGHT" -> y++;
+                case "DOWN" -> x++;
+                case "LEFT" -> y--;
+            }
+            if (currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] == 1) {
+                moveCrate(x, y);
+            } else if (currentConfig.getBoard()[currentConfig.getTipRow()][currentConfig.getTipCol()] > 1) {
+                moveTower(x, y, direction);
+            }
         }
     }
 
@@ -109,13 +98,14 @@ public class TipOverModel {
                 copy.setTipRow(row);
                 copy.setTipCol(col);
                 currentConfig = copy;
+                this.feedback = "";
             } else {
-                System.out.println("Illegal Move (crate)");
+                this.feedback = "Illegal Move (crate)";
             }
         } else {
-            System.out.println("Illegal Move (off board - crate)");
+            this.feedback = "Illegal Move (off board - crate)";
         }
-        System.out.println(currentConfig);
+        //System.out.println(currentConfig);
     }
 
     private void moveTower(int row, int col, String direction){
@@ -126,24 +116,41 @@ public class TipOverModel {
                     hold.setTipRow(row);
                     hold.setTipCol(col);
                     currentConfig = hold;
+                    this.feedback = "A tower has been tipped over";
                 } else {
-                    System.out.println("Illegal Move (tower - idk)");
+                    this.feedback = "Illegal Move (tower - idk)";
                 }
             } else if(currentConfig.getBoard()[row][col] > 0){
                 TipOverConfig copy = new TipOverConfig(currentConfig);
                 copy.setTipRow(row);
                 copy.setTipCol(col);
                 currentConfig = copy;
+                this.feedback = "";
             }
         } else {
-            System.out.println("Illegal Move (off board - tower)");
+            this.feedback = "Illegal Move (off board - tower)";
         }
-        System.out.println(currentConfig);
+        //System.out.println(currentConfig);
     }
 
     public void hint(){
         Solver<TipOverConfig> TipSolver = new Solver<>(currentConfig);
         ArrayList<TipOverConfig> path = TipSolver.solve(currentConfig);
+
+        if (path == null) {
+            feedback = "Unsolvable board";
+            return;
+        }
+
+        if (path.isEmpty() || path.size() < 2) {
+            System.out.println("You already won!");
+            return;
+        }
+
+        if(isSolution(path.get(1))){
+            feedback = "I WON!";
+        }
+
         currentConfig = path.get(1);
 
     }
@@ -156,12 +163,15 @@ public class TipOverModel {
         return currentConfig;
     }
 
-    public boolean isSolution(){
+    public boolean isSolution(TipOverConfig config){
         boolean holding = false;
-        if(currentConfig.getTipRow()== currentConfig.getGoalRow() && currentConfig.getTipCol()== currentConfig.getGoalCol()){
+        if(config.getTipRow()== config.getGoalRow() && config.getTipCol()== config.getGoalCol()){
             holding = true;
         }
         return holding;
     }
+
+    public String getFeedback() {return feedback;}
+
 
 }
