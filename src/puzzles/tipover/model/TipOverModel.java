@@ -115,6 +115,7 @@ public class TipOverModel {
         } else {
             System.out.println("Illegal Move (off board - crate)");
         }
+        System.out.println(currentConfig);
     }
 
     private void moveTower(int row, int col, String direction){
@@ -137,7 +138,7 @@ public class TipOverModel {
         } else {
             System.out.println("Illegal Move (off board - tower)");
         }
-
+        System.out.println(currentConfig);
     }
 
     public void hint(){

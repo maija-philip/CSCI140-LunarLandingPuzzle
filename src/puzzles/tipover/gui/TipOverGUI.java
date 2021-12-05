@@ -37,9 +37,11 @@ public class TipOverGUI extends Application
     private int cols;
 
     private Label feedback;
-    private ArrayList<Label> squares;
+    private Label[][] squares;
 
     private static final Background WHITE = new Background(new BackgroundFill(Color.WHITE,null,null));
+    private static final Background RED = new Background(new BackgroundFill(Color.RED,null,null));
+    private static final Background PINK = new Background(new BackgroundFill(Color.PINK,null,null));
     private static final double WIDTH = 640;
     private static final double HEIGHT = 480;
 
@@ -64,11 +66,20 @@ public class TipOverGUI extends Application
         BorderPane.setAlignment(this.feedback, Pos.TOP_LEFT);
 
         GridPane gridPane = new GridPane();
+        squares = new Label[this.model.getCurrentConfig().getHeight()][this.model.getCurrentConfig().getWidth()];
         for (int i = 0; i < this.model.getCurrentConfig().getHeight(); i++) {
             for (int j = 0; j < this.model.getCurrentConfig().getWidth(); j++) {
-                Label square = new Label(" " + this.model.getCurrentConfig().getBoard()[i][j] + " ");
+                Label square = new Label(this.model.getCurrentConfig().getBoard()[i][j] + "");
                 square.setStyle("-fx-font: " + SQUARES_FONT_SIZE + " arial;");
-                gridPane.add(square,i,j);
+                if(i==this.model.getCurrentConfig().getGoalRow() & j==this.model.getCurrentConfig().getGoalCol()){
+                    square.setBackground(RED);
+                } else if (i==this.model.getCurrentConfig().getTipRow() & j==this.model.getCurrentConfig().getTipCol()){
+                    square.setBackground(PINK);
+                } else {
+                    square.setBackground(WHITE);
+                }
+                squares[i][j] = square;
+                gridPane.add(square,j,i);
             }
         }
         borderPane.setLeft(gridPane);
@@ -99,6 +110,31 @@ public class TipOverGUI extends Application
         BorderPane.setAlignment(left,Pos.CENTER_LEFT);
         BorderPane.setAlignment(right,Pos.CENTER_RIGHT);
 
+        up.setOnAction((event) -> {
+            this.model.move("UP");
+            update(this.model,null);
+            //System.out.println("up");
+            //System.out.println(this.model.getCurrentConfig().getTipRow() + " " + this.model.getCurrentConfig().getTipCol() + " " + this.model.getCurrentConfig().getBoard()[this.model.getCurrentConfig().getTipRow()][this.model.getCurrentConfig().getTipCol()]);
+        });
+        down.setOnAction((event) -> {
+            this.model.move("DOWN");
+            update(this.model,null);
+            //System.out.println("down");
+            //System.out.println(this.model.getCurrentConfig().getTipRow() + " " + this.model.getCurrentConfig().getTipCol() + " " + this.model.getCurrentConfig().getBoard()[this.model.getCurrentConfig().getTipRow()][this.model.getCurrentConfig().getTipCol()]);
+        });
+        left.setOnAction((event) -> {
+            this.model.move("LEFT");
+            update(this.model,null);
+            //System.out.println("left");
+            //System.out.println(this.model.getCurrentConfig().getTipRow() + " " + this.model.getCurrentConfig().getTipCol() + " " + this.model.getCurrentConfig().getBoard()[this.model.getCurrentConfig().getTipRow()][this.model.getCurrentConfig().getTipCol()]);
+        });
+        right.setOnAction((event) -> {
+            this.model.move("RIGHT");
+            update(this.model,null);
+            //System.out.println("right");
+            //System.out.println(this.model.getCurrentConfig().getTipRow() + " " + this.model.getCurrentConfig().getTipCol() + " " + this.model.getCurrentConfig().getBoard()[this.model.getCurrentConfig().getTipRow()][this.model.getCurrentConfig().getTipCol()]);
+        });
+
         Button load = new Button("Load");
         Button reload = new Button("Reload");
         Button hint = new Button("Hint");
@@ -116,6 +152,7 @@ public class TipOverGUI extends Application
         reload.setOnAction((event) -> {System.out.println("reload pressed");});
         hint.setOnAction((event) -> {System.out.println("hint pressed");});
 
+
         Scene scene = new Scene( borderPane, WIDTH, HEIGHT );
         stage.setScene( scene );
         stage.setTitle( "Tip Over" );
@@ -124,9 +161,33 @@ public class TipOverGUI extends Application
         stage.show();
     }
 
+    public void updateBoard(int[][] numbers){
+        for(int i=0 ; i < this.model.getCurrentConfig().getHeight(); i++){
+            for(int j=0; j < this.model.getCurrentConfig().getWidth(); j++){
+                Label tempL = squares[i][j];
+                int tempN = numbers[i][j];
+
+                if(tempN != Integer.parseInt(tempL.getText())){
+                    tempL.setText(tempN + "");
+                }
+
+                if(i==this.model.getCurrentConfig().getGoalRow() & j==this.model.getCurrentConfig().getGoalCol()){
+                    tempL.setBackground(RED);
+                } else if (i==this.model.getCurrentConfig().getTipRow() & j==this.model.getCurrentConfig().getTipCol()){
+                    tempL.setBackground(PINK);
+                } else {
+                    tempL.setBackground(WHITE);
+                }
+            }
+
+        }
+    }
+
     @Override
     public void update( TipOverModel tipOverModel, Object o ) {
         System.out.println( "My model has changed! (DELETE THIS LINE)");
+
+        updateBoard(this.model.getCurrentConfig().getBoard());
     }
 
     public static void main( String[] args ) {
