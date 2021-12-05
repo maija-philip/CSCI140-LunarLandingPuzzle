@@ -39,8 +39,10 @@ public class LunarLandingGUI extends Application
     private int ROWS;
     private int COLS;
 
+    private double GRID_DIM;
+
     /** GUI Elements to keep track of */
-    private GridPane gridPane;
+    private BorderPane borderPane;
     private Label feedback;
     private Button[][] gridSpots;
 
@@ -66,11 +68,12 @@ public class LunarLandingGUI extends Application
 
     @Override
     public void start( Stage stage ) {
-        BorderPane borderPane = new BorderPane();
+        this.borderPane = new BorderPane();
 
         // get the row and column values
         this.ROWS = this.model.getRows();
         this.COLS = this.model.getColumns();
+        GRID_DIM = (HEIGHT-15)/ROWS;
 
         // set up the current clicked value
         clickedCoords = new int[] {-1, -1};
@@ -84,12 +87,9 @@ public class LunarLandingGUI extends Application
         loadImages();
 
         // make board grid
-        this.gridPane = new GridPane();
-        makeBoard(gridPane);
+        makeBoard();
         updateGrid(this.model.getRobots());
 
-        borderPane.setLeft(gridPane);
-        BorderPane.setAlignment(gridPane, Pos.TOP_LEFT);
 
 
         // make buttons area
@@ -189,7 +189,17 @@ public class LunarLandingGUI extends Application
             if (file != null) {
 
                 this.model.load(file.getPath());
-                makeBoard(gridPane);
+
+                // get the row and column values
+                this.ROWS = this.model.getRows();
+                this.COLS = this.model.getColumns();
+                GRID_DIM = (HEIGHT-15)/ROWS;
+
+                // reload the images so they are the right size
+                loadImages();
+
+                // fix the display
+                makeBoard();
                 update(this.model, null);
                 feedback.setText("File Loaded");
             }
@@ -202,7 +212,7 @@ public class LunarLandingGUI extends Application
             // System.out.println("Reload Pressed");
 
             this.model.reload();
-            makeBoard(gridPane);
+            makeBoard();
             update(this.model, null);
             feedback.setText("File Loaded");
         });
@@ -225,27 +235,27 @@ public class LunarLandingGUI extends Application
 
     private void loadImages() {
         // load images
-        this.explorer = new Image(getClass().getResourceAsStream("resources/explorer.png"));
+        this.explorer = new Image(getClass().getResourceAsStream("resources/explorer.png"), GRID_DIM, GRID_DIM, true, true);
         this.robots = new Image[9];
 
-        this.robots[0] = new Image(getClass().getResourceAsStream("resources/robot-blue.png"));
-        this.robots[1] = new Image(getClass().getResourceAsStream("resources/robot-green.png"));
-        this.robots[2] = new Image(getClass().getResourceAsStream("resources/robot-lightblue.png"));
-        this.robots[3] = new Image(getClass().getResourceAsStream("resources/robot-orange.png"));
-        this.robots[4] = new Image(getClass().getResourceAsStream("resources/robot-pink.png"));
-        this.robots[5] = new Image(getClass().getResourceAsStream("resources/robot-purple.png"));
-        this.robots[6] = new Image(getClass().getResourceAsStream("resources/robot-white.png"));
-        this.robots[7] = new Image(getClass().getResourceAsStream("resources/robot-yellow.png"));
+        this.robots[0] = new Image(getClass().getResourceAsStream("resources/robot-blue.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[1] = new Image(getClass().getResourceAsStream("resources/robot-green.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[2] = new Image(getClass().getResourceAsStream("resources/robot-lightblue.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[3] = new Image(getClass().getResourceAsStream("resources/robot-orange.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[4] = new Image(getClass().getResourceAsStream("resources/robot-pink.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[5] = new Image(getClass().getResourceAsStream("resources/robot-purple.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[6] = new Image(getClass().getResourceAsStream("resources/robot-white.png"), GRID_DIM, GRID_DIM, true, true);
+        this.robots[7] = new Image(getClass().getResourceAsStream("resources/robot-yellow.png"), GRID_DIM, GRID_DIM, true, true);
         this.robots[8] = this.explorer;
     }
 
-    private void makeBoard(GridPane gridPane) {
+    private void makeBoard() {
+        GridPane gridPane = new GridPane();
 
-        double temp = ((HEIGHT-15)/ROWS)*COLS + 1;
+        double temp = (GRID_DIM*COLS) + 1;
         gridPane.setPrefWidth(temp);
         gridPane.setMinWidth(temp);
         gridPane.setMaxWidth(temp);
-
 
         this.gridSpots = new Button[ROWS][COLS];
         int spotCount = 0;
@@ -256,7 +266,7 @@ public class LunarLandingGUI extends Application
                 int roww = row;
                 int coll = col;
 
-                gridPane.getColumnConstraints().add(new ColumnConstraints((HEIGHT-15)/ROWS));
+                gridPane.getColumnConstraints().add(new ColumnConstraints(GRID_DIM));
 
                 // Button space = new Button(spotCount + "");
                 Button space = new Button();
@@ -266,6 +276,7 @@ public class LunarLandingGUI extends Application
                 space.setMaxWidth(Double.MAX_VALUE);
                 space.setMaxHeight(Double.MAX_VALUE);
                 space.setPadding(new Insets(0, 0, 0, 0));
+
 
                 space.setOnAction((event) -> {
                     // System.out.println("Grid Button Pressed");
@@ -277,7 +288,7 @@ public class LunarLandingGUI extends Application
                 gridPane.add(space, col, row);
                 spotCount++;
             }
-            gridPane.getRowConstraints().add(new RowConstraints((HEIGHT-15)/ROWS));
+            gridPane.getRowConstraints().add(new RowConstraints(GRID_DIM));
 
         }
 
@@ -286,6 +297,10 @@ public class LunarLandingGUI extends Application
         int goalY = this.model.getGoal()[1];
 
         this.gridSpots[goalX][goalY].setStyle("-fx-background-color: pink;");
+
+        // add board to display
+        borderPane.setLeft(gridPane);
+        BorderPane.setAlignment(gridPane, Pos.TOP_LEFT);
 
     }
 
@@ -308,6 +323,8 @@ public class LunarLandingGUI extends Application
             assignImage(tempSpace, letter);
 
         }
+
+
     }
 
     private void assignImage(Button space, String letter) {
