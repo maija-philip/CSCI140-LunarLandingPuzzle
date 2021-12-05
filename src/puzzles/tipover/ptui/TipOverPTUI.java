@@ -38,8 +38,13 @@ public class TipOverPTUI implements Observer<TipOverModel, Object > {
                     this.movesNum = 0;
                     displayBoard(movesNum);
                 } else if (words[0].startsWith("m")){
-                    this.model.move(words[1]);
-                    this.movesNum+=1;
+                    if(words[1].equals("UP")||words[1].equals("DOWN")||words[1].equals("LEFT")||words[1].equals("RIGHT")){
+                        this.model.move(words[1]);
+                        this.movesNum+=1;
+                        displayBoard(movesNum);
+                    } else {
+                        System.out.println("Legal directions are\n[UP, RIGHT, DOWN, LEFT]");
+                    }
                 } else if (words[0].startsWith("hi")){
                     this.model.hint();
                     this.movesNum+=1;
