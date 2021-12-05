@@ -9,7 +9,7 @@ import util.Observer;
 import java.util.Scanner;
 
 /**
- * DESCRIPTION
+ * runs the PTUI for the lunar landing game and delegates the actions that the user chooses
  * @author Maija Philip
  * November 2021
  */
@@ -23,6 +23,9 @@ public class LunarLandingPTUI implements Observer< LunarLandingModel, Object > {
         initializeView();
     }
 
+    /**
+     * runs the game, takes what the user selected and delegates the according action
+     */
     private void run(){
         Scanner in = new Scanner(System.in);
         for( ; ; ){
@@ -61,16 +64,26 @@ public class LunarLandingPTUI implements Observer< LunarLandingModel, Object > {
         }
     }
 
+    /**
+     * sets up this as an observer to the model
+     */
     public void initializeView(){
         this.model.addObserver(this);
         update(this.model,null);
     }
 
+    /**
+     * displays the current board
+     * @param numMoves - number of moves that have been played
+     */
     public void displayBoard(int numMoves){
         System.out.println("Move " + numMoves + ": ");
         System.out.println(this.model.getCurrentConfig());
     }
 
+    /**
+     * displays the list of commands
+     */
     public void help(){
         System.out.println("l(oad) f     -- load new puzzle from file f");
         System.out.println("r(eload)     -- reload current puzzle");

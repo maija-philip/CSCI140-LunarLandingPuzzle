@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * DESCRIPTION
+ * Makes things happen, connects the board to the user inputs
  * @author Maija Philip
  * November 2021
  */
@@ -65,6 +65,10 @@ public class LunarLandingModel {
 
     }
 
+    /**
+     * loads the selected board
+     * @param filename - the file path of the new board
+     */
     public void load(String filename) {
         // System.out.println("load");
 
@@ -79,6 +83,9 @@ public class LunarLandingModel {
         this.reset();
     }
 
+    /**
+     * reloads the board to restart the game
+     */
     public void reload() {
         //System.out.println("reload");
         try {
@@ -90,6 +97,12 @@ public class LunarLandingModel {
         this.reset();
     }
 
+    /**
+     * moves the board in the way specified if it's a legal move
+     * @param givenX - x coordinate of the robot to move
+     * @param givenY - y coordinate of the robot to move
+     * @param direction - direction it should move in
+     */
     public void move(String givenX, String givenY, String direction) {
         //System.out.println("move robot at (" + givenX + ", " + givenY + ") " + direction);
 
@@ -108,6 +121,9 @@ public class LunarLandingModel {
 
     }
 
+    /**
+     * moves the board one step closer to the solution
+     */
     public void hint(){
 
         Solver<LunarLandingConfig> TipSolver = new Solver<>(currentConfig);
@@ -127,10 +143,18 @@ public class LunarLandingModel {
 
     }
 
+    /**
+     * tells whether the current configuration is the solution
+     * @return - whether the current configuration is the solution
+     */
     public boolean isSolution() {
         return currentConfig.isSolution(currentConfig);
     }
 
+    /**
+     * gives the current configuration that the model has
+     * @return - current configuration of the board
+     */
     public LunarLandingConfig getCurrentConfig() {
         return currentConfig;
     }

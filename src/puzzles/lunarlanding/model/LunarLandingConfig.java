@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * DESCRIPTION
+ * Keeps track of the board for the Lunar Landing Game
  * @author Maija Philip
  * November 2021
  */
@@ -364,9 +364,18 @@ public class LunarLandingConfig implements Configuration<LunarLandingConfig>{
     public String geFeedback() {return feedback;}
 
 
-
-
-
+    /**
+     * Moves the board one move forward as directed by the parameters,
+     * does not change the board if the move is invalid. Updates the
+     * feedback on whether the move is legal, which can be accessed
+     * with the getFeedback() method.
+     * @param x - x position of the robot that should be moved
+     * @param y - y position of the robot that should be moved
+     * @param direction - UP, DOWN, LEFT, or RIGHT, the direction that
+     *                  the selected robot should move in
+     * @param current - the current configuration
+     * @return - the updated configuration
+     */
     public LunarLandingConfig playMove(int x, int y, String direction, LunarLandingConfig current) {
 
         if (!isCoordinateInGrid(x, y)) {

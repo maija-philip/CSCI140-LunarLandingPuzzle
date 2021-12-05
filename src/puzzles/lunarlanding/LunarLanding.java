@@ -8,8 +8,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
- * DESCRIPTION
- * @author YOUR NAME HERE
+ * Runs the lunar landing game and gives the quickest solution
+ * @author Maija Philip
  * November 2021
  */
 public class LunarLanding {
@@ -19,6 +19,10 @@ public class LunarLanding {
      * run the solver on the puzzle
      */
 
+    /**
+     * the main method, runs the filename specified and prints the quickest solution
+     * @param args - filename of the board that should load
+     */
     public static void main( String[] args ) {
 
         LunarLandingConfig c;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * DESCRIPTION
+ * creates the UI in a pretty, new window, way
  * @author Maija Philip
  * November 2021
  */
@@ -368,6 +368,10 @@ public class LunarLandingGUI extends Application
 
     }
 
+    /**
+     * main method :D, runs the program
+     * @param args - file to load on start
+     */
     public static void main( String[] args ) {
         // System.err.println( "REPLACE THIS METHOD!" );
         Application.launch( args );
