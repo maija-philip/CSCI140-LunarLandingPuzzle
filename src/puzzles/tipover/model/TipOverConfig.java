@@ -6,6 +6,8 @@ import solver.Configuration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -326,6 +328,13 @@ public class TipOverConfig implements Configuration<TipOverConfig> {
                 }
             }
         }
+        return result;
+    }
+
+    @Override
+    public int hashCode(){
+        int result = Objects.hash(width, height, goalRow, goalCol, tipRow, tipCol);
+        result = 31 * result + Arrays.deepHashCode(board);
         return result;
     }
 
